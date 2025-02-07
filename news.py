@@ -41,7 +41,7 @@ def play_sound():
 # Fetch News Function
 def get_news():
     category = selected_category.get()
-    NEWS_URL = BASE_URL.format(category, API_KEY)  # Fixed formatting issue
+    NEWS_URL = BASE_URL.format(category, API_KEY)
 
     try:
         response = requests.get(NEWS_URL)
@@ -51,7 +51,7 @@ def get_news():
             headlines = [f"🔹 {article['title']}" for article in news_data["articles"][:5]]
             news_text = "\n\n".join(headlines)
 
-            # Show notification
+            # notification
             notification.notify(
                 title=f"Latest {category.capitalize()} News",
                 message=news_text,
@@ -59,10 +59,9 @@ def get_news():
                 timeout=10
             )
 
-            # Play sound alert
+            # sound alert
             play_sound()
 
-            # Update GUI
             news_display.config(state="normal")
             news_display.delete("1.0", tk.END)
             news_display.insert(tk.END, news_text)
@@ -80,15 +79,13 @@ def get_news():
         news_display.insert(tk.END, f"❌ Error fetching news: {str(e)}")
         news_display.config(state="disabled")
 
-    # Schedule the next update (every 3 hours = 10800000ms)
+    # Schedule the next update
     root.after(10800000, get_news)
 
 # Refresh Button
 refresh_button = ttk.Button(root, text="🔄 Refresh News", command=get_news)
 refresh_button.pack(pady=10)
 
-# Fetch news on startup and schedule auto-refresh
 get_news()
 
-# Run the GUI
 root.mainloop()
